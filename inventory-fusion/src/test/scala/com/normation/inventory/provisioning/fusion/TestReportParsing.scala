@@ -44,6 +44,8 @@ import scala.xml.XML
 import net.liftweb.common.EmptyBox
 import net.liftweb.common.Full
 import java.io.File
+import com.normation.inventory.domain.Windows
+import com.normation.inventory.domain.Windows2012
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class TestReportParsing {
@@ -72,6 +74,29 @@ class TestReportParsing {
 
     assertTrue("We should have two IPs for eth0",
       report.node.networks.find( _.name == "eth0").get.ifAddresses.size == 2
+    )
+
+  }
+
+  @Test
+  def testWindows2012Parsing() {
+
+    val is = this.getClass.getClassLoader.getResourceAsStream("fusion-report/WIN-AI8CLNPLOV5-2014-06-20-18-15-49.ocs")
+    assertNotNull(is)
+
+    val report = parser.fromXml("report", is) match {
+      case Full(e) => e
+      case eb:EmptyBox =>
+        val e = eb ?~! "Parsing error"
+        e.rootExceptionCause match {
+          case Full(ex) => throw new Exception(e.messageChain, ex)
+          case _ => throw new Exception(e.messageChain)
+        }
+    }
+
+    assertEquals("The OS must be Windows 2012"
+      , Windows2012
+      , report.node.main.osDetails.os
     )
 
   }
