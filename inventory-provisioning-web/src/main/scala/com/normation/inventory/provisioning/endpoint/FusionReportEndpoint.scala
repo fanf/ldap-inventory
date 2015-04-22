@@ -107,6 +107,11 @@ class FusionReportEndpoint(
           logger.info("New input inventory: '%s'".format(reportFile.getOriginalFilename))
           //val reportFile = copyFileToTempDir(f)
 
+
+          //find the sig and the report,
+          //check sig on the file - it must be done on the file for validity
+          //add the sig on the parsed inventory.
+
           var in : InputStream = null
           logger.trace("Start post parsing inventory '%s'".format(reportFile.getOriginalFilename))
           try {
